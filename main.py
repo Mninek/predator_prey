@@ -1,6 +1,8 @@
 import pygame
 import random
 import math
+from pygame import mixer
+from spritesheet import Spritesheet
 
 white = (255,255,255)
 black = (0,0,0)
@@ -86,17 +88,22 @@ class Food(pygame.sprite.Sprite):
 def main():
     x = 1200
     y = 800
-    
+
+    #window
     window = pygame.display
     window.set_caption("Predators and Prey")
     surface = window.set_mode([x,y])
-    
-    game = True
-    
+    #TEST
+    infoObject = pygame.display.Info()
+    print(infoObject)
+    #TEST
+    #clock
     clock = pygame.time.Clock()
+
+    #techs babyy
     techs = []
     techs.append(Prey(600,450))
-
+    #foods
     foods = []
     for i in range(3):
         i = (i+1)*200
@@ -104,16 +111,13 @@ def main():
             j = (j+1)*200
             foods.append(Food(i,j))
 
-            
-    """
-    for i in range(3):
-        i = (i+1)*200
-        for j in range(3):
-            j = (j+1)*200
-            techs.append(Prey(i,j))
-            """
+
+    game = True        
     background = pygame.transform.scale(pygame.image.load('sprites/background.png'), (x,y))
     font = pygame.font.SysFont("timesnewroman",20)
+
+    lord_sprite = Spritesheet('sprites/the_lord/sprite.png', 'lord')
+    lord = lord_sprite.get_sprite(0,0)
     while game:
         #fill surface
         surface.fill(white)
@@ -127,7 +131,7 @@ def main():
         for tech in techs:
             surface.blit(tech.get_img(), tech.get_tup())
             tech.search_foods(foods)
-        
+        surface.blit(lord, (1100,700))
         window.update()
         clock.tick(15)
     pygame.quit()
