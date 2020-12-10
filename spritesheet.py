@@ -15,7 +15,23 @@ class Spritesheet:
             self.x = 0
             self.y = 0
             self.dance = True
-
+        if self.kind == "jamcat":
+            self.w = 498
+            self.h = 280
+            self.mw = 2490
+            self.mh = 5040
+            self.x = 0
+            self.y = 0
+            self.dance = True
+        if self.kind == "squid":
+            self.w = 450
+            self.h = 337
+            self.mw = 2250
+            self.mh = 1348
+            self.x = 0
+            self.y = 0
+            self.dance = True
+        
     #x, y is basically where in the sprite sheet were are cutting this out of
     def get_sprite(self, x, y):
         if self.dance:

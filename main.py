@@ -202,7 +202,12 @@ def main():
     lord = lord_sprite.get_sprite(0,0)
     lord_w = 1000
     lord_h = 600
-    up = True
+    lup = True
+    squid_sprite = Spritesheet('sprites/squid/squid.png', 'squid')
+    squid = lord_sprite.get_sprite(0,0)
+    squid_w = 200
+    squid_h = 600
+    sup = True
     while game:
         #fill surface
         surface.fill(white)
@@ -222,15 +227,29 @@ def main():
             cat.find_prey(techs)
             
         surface.blit(lord, (lord_w,lord_h))
-        if up:
+        if lup:
             lord_h -= 10
             if lord_h == 0:
-                up = False
+                lup = False
         else:
             lord_h += 10
             if lord_h == y-200:
-                up = True
+                lup = True
         lord = lord_sprite.get_sprite(0,0)
+        
+        surface.blit(squid, (squid_w,squid_h))
+        if sup:
+            squid_h -= 10
+            if squid_h == 0:
+                sup = False
+        else:
+            squid_h += 10
+            if squid_h == y-200:
+                sup = True
+        squid = squid_sprite.get_sprite(0,0)
+
+        surface.blit(jamcat,(j_w,j_h))
+        jamcat = jamcat_sprite.get_sprite(0,0)
         window.update()
         clock.tick(15)
     pygame.quit()
