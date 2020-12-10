@@ -19,6 +19,7 @@ class Prey(pygame.sprite.Sprite):
         self.vision = 250
         self.eaten = 0
         self.ate_sound = pygame.mixer.Sound('sounds/burger.wav')
+        self.ate_sound.set_volume(.05)
 
     def get_img(self):
         return self.img
@@ -80,11 +81,13 @@ class Predator(pygame.sprite.Sprite):
     def __init__(self,x,y):
         self.x = x
         self.y = y
-        self.img = pygame.transform.scale(pygame.image.load('sprites/evil eye.png'), (40,30))
+        self.img = pygame.transform.scale(pygame.image.load('sprites/devilish.png'), (40,30))
         self.vision = 300
         self.hunting = False
         self.hunt_sound = pygame.mixer.Sound('sounds/puma.wav')
         self.ate_sound = pygame.mixer.Sound('sounds/cutemeow.wav')
+        self.hunt_sound.set_volume(.05)
+        self.ate_sound.set_volume(.05)
 
     def get_img(self):
         return self.img
@@ -132,14 +135,14 @@ class Predator(pygame.sprite.Sprite):
             self.move(mx, my)
             
     def hunt(self):
-        self.img = pygame.transform.scale(pygame.image.load('sprites/devilish.png'), (40,30))
+        self.img = pygame.transform.scale(pygame.image.load('sprites/evil eye.png'), (40,30))
         self.hunt_sound.play()
         self.hunting = True 
 
     def eat_prey(self, preys, index):
         print("GOODBYE TECH")
         preys.pop(index)
-        self.img = pygame.transform.scale(pygame.image.load('sprites/evil eye.png'), (40,30))
+        self.img = pygame.transform.scale(pygame.image.load('sprites/devilish.png'), (40,30))
         self.ate_sound.play()
         self.hunting = False
 
