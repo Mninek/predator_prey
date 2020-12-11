@@ -20,6 +20,8 @@ class Prey(pygame.sprite.Sprite):
         self.eaten = 0
         self.ate_sound = pygame.mixer.Sound('sounds/burger.wav')
         self.ate_sound.set_volume(.05)
+        self.cat_vision = 100
+        self.speed = 4
 
     def get_img(self):
         return self.img
@@ -30,6 +32,36 @@ class Prey(pygame.sprite.Sprite):
     def move(self, mx, my):
         self.x += mx
         self.y += my
+
+    def search_predators(self, cats):
+        closest = 1000000
+        cx, cy = 0,0
+        cindex = 0
+        for index, cat in enumerate(cats):
+            tup = cat.get_tup()
+            fx, fy = tup[0], tup[1]
+            dist = math. sqrt( (self.x - fx)**2 + (self.y - fy)**2 )
+            if dist < closest:
+                closest = dist
+                cx, cy = fx, fy
+                cindex = index
+            index +=1
+        if closest <= self.cat_vision:
+            #if positive, cat is to left, o.w. cat to right
+            horizontal = self.x - cx
+            #if positive cat is above, o.w. cat is below
+            vertical = self.y - cy
+            mx, my = 0,0
+            if horizontal > 0:
+                mx = self.speed
+            else:
+                mx = -self.speed
+            if vertical > 0:
+                my = self.speed
+            else:
+                my = -self.speed
+            self.move(mx, my)   
+            
         
     def search_foods(self, foods):
         closest = 10000000
@@ -54,16 +86,17 @@ class Prey(pygame.sprite.Sprite):
             #HAVE 'FINESE' WHEN HE GETS CLOSE TO STEAKS
 
             #THANK U BALLOD
-            if -5 <= mx <= 5 and -5 <= my <= 5:
+            r = self.speed + 1
+            if -r <= mx <= r and -r <= my <= r:
                 self.eat_food(foods, cindex)
-            if mx != 0 and mx <= 5:
-                mx  = -4
+            if mx != 0 and mx <= r:
+                mx  = -r
             else:
-                mx = 4
-            if my != 0 and my <= 5:
-                my = -4
+                mx = r
+            if my != 0 and my <= r:
+                my = -r
             else:
-                my = 4
+                my = r
             self.move(mx, my)
         else:
             #TODO: BETTER RANDOM ALG SO HE MOVES IN ONE DIRECTION FOR SOME TIME
@@ -88,6 +121,7 @@ class Predator(pygame.sprite.Sprite):
         self.ate_sound = pygame.mixer.Sound('sounds/cutemeow.wav')
         self.hunt_sound.set_volume(.05)
         self.ate_sound.set_volume(.05)
+        self.speed = 6
 
     def get_img(self):
         return self.img
@@ -122,17 +156,19 @@ class Predator(pygame.sprite.Sprite):
 
             #TODO: MAKE LESS RETARDED
             #HAVE 'FINESE' WHEN HE GETS CLOSE TO STEAKS
-            if mx <= 5 and mx >= -5 and my <= 5 and my >= -5:
+            r = self.speed + 1
+            if mx <= r and mx >= -r and my <= r and my >= -r:
                 self.eat_prey(preys, cindex)
-            if mx != 0 and mx <= 6:
-                mx  = -5
+            if mx != 0 and mx <= r:
+                mx  = -self.speed
             else:
-                mx = 5
-            if my != 0 and my <= 6:
-                my = -5
+                mx = self.speed
+            if my != 0 and my <= r:
+                my = -self.speed
             else:
-                my = 5
-            self.move(mx, my)
+                my = self.speed
+            self.move(mx, my)            
+            
             
     def hunt(self):
         self.img = pygame.transform.scale(pygame.image.load('sprites/evil eye.png'), (40,30))
@@ -221,6 +257,7 @@ def main():
         for tech in techs:
             surface.blit(tech.get_img(), tech.get_tup())
             tech.search_foods(foods)
+            tech.search_predators(cats)
 
         for cat in cats:
             surface.blit(cat.get_img(), cat.get_tup())
@@ -247,9 +284,6 @@ def main():
             if squid_h == y-200:
                 sup = True
         squid = squid_sprite.get_sprite(0,0)
-
-        surface.blit(jamcat,(j_w,j_h))
-        jamcat = jamcat_sprite.get_sprite(0,0)
         window.update()
         clock.tick(15)
     pygame.quit()
